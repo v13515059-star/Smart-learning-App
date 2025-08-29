@@ -41,10 +41,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // Extract name from email or use a default
+    const nameFromEmail = email.split('@')[0];
+    const displayName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+    
     const mockUser = {
       id: '1',
       email,
-      name: email.split('@')[0]
+      name: displayName
     };
     
     setUser(mockUser);

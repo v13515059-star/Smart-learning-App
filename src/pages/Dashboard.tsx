@@ -100,7 +100,7 @@ const Dashboard = () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 text-gray-300">
                 <User className="w-5 h-5" />
-                <span>Welcome, {user?.name}</span>
+                <span>Welcome, {user?.name || 'User'}</span>
               </div>
               <button
                 onClick={handleLogout}
@@ -123,7 +123,7 @@ const Dashboard = () => {
           className="mb-12"
         >
           <h1 className="text-4xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-xl text-gray-300">Transform your learning materials into comprehensive courses</p>
+          <p className="text-xl text-gray-300">Welcome back, {user?.name}! Transform your learning materials into comprehensive courses</p>
         </motion.div>
 
         {/* Stats */}
