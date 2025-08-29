@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { getCourseById } from '../utils/courseGenerator';
 import QuizModal from '../components/QuizModal';
 import VideoPlayer from '../components/VideoPlayer';
 import FlashcardDeck from '../components/FlashcardDeck';
@@ -21,178 +22,12 @@ const CourseView = () => {
   const [selectedQuiz, setSelectedQuiz] = useState<any>(null);
   const [quizScores, setQuizScores] = useState<{ [key: number]: number }>({});
 
-  // Mock course data
-  const course = {
-    title: 'Introduction to Machine Learning',
-    description: 'A comprehensive guide to understanding machine learning concepts, algorithms, and practical applications.',
-    thumbnail: 'https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=800',
-    videoUrl: 'https://www.youtube.com/watch?v=aircAruvnKk',
-    duration: '2h 30m',
-    lessons: 12,
-    progress: 75,
-    type: 'youtube'
-  };
-
-  const notes = [
-    {
-      id: 1,
-      title: 'What is Machine Learning?',
-      content: `Machine Learning is a subset of artificial intelligence (AI) that focuses on the use of data and algorithms to imitate the way that humans learn, gradually improving its accuracy.
-
-## Key Concepts
-
-### Definition
-Machine learning is a method of data analysis that automates analytical model building. It is a branch of artificial intelligence based on the idea that systems can learn from data, identify patterns and make decisions with minimal human intervention.
-
-### Types of Machine Learning
-1. **Supervised Learning**: Uses labeled training data
-2. **Unsupervised Learning**: Finds hidden patterns in data
-3. **Reinforcement Learning**: Learns through interaction with environment
-
-### Applications
-- Image recognition
-- Natural language processing
-- Recommendation systems
-- Autonomous vehicles`,
-      duration: '15 min read'
-    },
-    {
-      id: 2,
-      title: 'Supervised vs Unsupervised Learning',
-      content: `Understanding the fundamental difference between supervised and unsupervised learning approaches.
-
-## Supervised Learning
-
-Supervised learning uses labeled training data to learn a mapping function from inputs to outputs. The algorithm learns from training data and makes predictions on new, unseen data.
-
-### Examples:
-- Classification: Email spam detection
-- Regression: House price prediction
-
-## Unsupervised Learning
-
-Unsupervised learning finds hidden patterns or structures in data without labeled examples. The algorithm must find patterns on its own.
-
-### Examples:
-- Clustering: Customer segmentation
-- Association: Market basket analysis`,
-      duration: '12 min read'
-    }
-  ];
-
-  const quizzes = [
-    {
-      id: 1,
-      title: 'Machine Learning Basics',
-      questions: [
-        {
-          id: 1,
-          question: 'What is the main goal of supervised learning?',
-          options: [
-            'To find hidden patterns in data',
-            'To learn from labeled training data',
-            'To maximize rewards through trial and error',
-            'To reduce the dimensionality of data'
-          ],
-          correctAnswer: 1,
-          explanation: 'Supervised learning uses labeled training data to learn a mapping function from inputs to outputs.'
-        },
-        {
-          id: 2,
-          question: 'Which of the following is an example of unsupervised learning?',
-          options: [
-            'Email spam detection',
-            'House price prediction',
-            'Customer segmentation',
-            'Image classification'
-          ],
-          correctAnswer: 2,
-          explanation: 'Customer segmentation is clustering, which is an unsupervised learning technique that finds hidden patterns in data.'
-        },
-        {
-          id: 3,
-          question: 'What is overfitting in machine learning?',
-          options: [
-            'When a model is too simple',
-            'When a model performs well on training data but poorly on new data',
-            'When a model has too few parameters',
-            'When a model trains too quickly'
-          ],
-          correctAnswer: 1,
-          explanation: 'Overfitting occurs when a model learns the training data too well and fails to generalize to new, unseen data.'
-        }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Supervised Learning Concepts',
-      questions: [
-        {
-          id: 4,
-          question: 'What is the difference between classification and regression?',
-          options: [
-            'Classification predicts continuous values, regression predicts categories',
-            'Classification predicts categories, regression predicts continuous values',
-            'There is no difference',
-            'Classification is unsupervised, regression is supervised'
-          ],
-          correctAnswer: 1,
-          explanation: 'Classification predicts discrete categories or classes, while regression predicts continuous numerical values.'
-        },
-        {
-          id: 5,
-          question: 'Which algorithm is commonly used for classification?',
-          options: [
-            'Linear Regression',
-            'K-means',
-            'Decision Tree',
-            'PCA'
-          ],
-          correctAnswer: 2,
-          explanation: 'Decision Trees are commonly used for classification tasks as they can split data into different classes.'
-        }
-      ]
-    },
-    {
-      id: 3,
-      title: 'Algorithms and Applications',
-      questions: [
-        {
-          id: 6,
-          question: 'What is cross-validation used for?',
-          options: [
-            'To increase training speed',
-            'To evaluate model performance and prevent overfitting',
-            'To reduce the size of the dataset',
-            'To visualize data'
-          ],
-          correctAnswer: 1,
-          explanation: 'Cross-validation is used to evaluate how well a model will generalize to new data and helps prevent overfitting.'
-        }
-      ]
-    }
-  ];
-
-  const flashcards = [
-    {
-      id: 1,
-      question: 'What is the main goal of supervised learning?',
-      answer: 'To learn a mapping function from input variables to output variables using labeled training data.',
-      category: 'Fundamentals'
-    },
-    {
-      id: 2,
-      question: 'Name three types of machine learning.',
-      answer: 'Supervised learning, Unsupervised learning, and Reinforcement learning.',
-      category: 'Types'
-    },
-    {
-      id: 3,
-      question: 'What is overfitting?',
-      answer: 'When a model learns the training data too well and fails to generalize to new, unseen data.',
-      category: 'Problems'
-    }
-  ];
+  // Get course data from storage
+  const course = id ? getCourseById(id) : null;
+  
+  if (!course) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleQuizStart = (quiz: any) => {
     setSelectedQuiz(quiz);
@@ -204,6 +39,7 @@ Unsupervised learning finds hidden patterns or structures in data without labele
       [quizId]: score
     }));
   };
+
   return (
     <div className="min-h-screen">
       {/* Navigation */}
@@ -267,7 +103,7 @@ Unsupervised learning finds hidden patterns or structures in data without labele
             
             <div className="w-full lg:w-80">
               <VideoPlayer 
-                videoUrl={course.videoUrl}
+                videoUrl={course.videoUrl || ''}
                 thumbnail={course.thumbnail}
                 title={course.title}
               />
@@ -314,6 +150,7 @@ Unsupervised learning finds hidden patterns or structures in data without labele
                 </div>
                 
                 {notes.map((note, index) => (
+                {course.notes.map((note, index) => (
                   <motion.div
                     key={note.id}
                     initial={{ opacity: 0, y: 30 }}
@@ -342,7 +179,7 @@ Unsupervised learning finds hidden patterns or structures in data without labele
                   <p className="text-gray-300">Test your understanding with AI-generated questions</p>
                 </div>
                 
-                {quizzes.map((quiz, index) => (
+                {course.quizzes.map((quiz, index) => (
                   <motion.div
                     key={quiz.id}
                     initial={{ opacity: 0, y: 30 }}
@@ -379,7 +216,7 @@ Unsupervised learning finds hidden patterns or structures in data without labele
 
             {activeTab === 'flashcards' && (
 
-              <FlashcardDeck flashcards={flashcards} />
+              <FlashcardDeck flashcards={course.flashcards} />
             )}
           </div>
         </motion.div>

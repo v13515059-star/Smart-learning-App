@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { generateCourseFromYoutube, generateCourseFromPdf, saveCourse } from '../utils/courseGenerator';
 import { 
   Zap, 
   ArrowLeft, 
@@ -56,12 +57,24 @@ const CreateCourse = () => {
     // Simulate AI processing
     await new Promise(resolve => setTimeout(resolve, 3000));
     
+    // Generate course based on input type
+    let generatedCourse;
+    if (activeTab === 'youtube' && youtubeUrl.trim()) {
+      generatedCourse = generateCourseFromYoutube(youtubeUrl);
+    } else if (activeTab === 'pdf' && selectedFile) {
+      generatedCourse = generateCourseFromPdf(selectedFile);
+    }
+    
+    if (generatedCourse) {
+      saveCourse(generatedCourse);
+    }
+    
     setProcessing(false);
     setCourseGenerated(true);
     
     // Redirect to course view after a short delay
     setTimeout(() => {
-      navigate('/course/new-course');
+      navigate(`/course/${generatedCourse?.id || 'new-course'}`);
     }, 2000);
   };
 

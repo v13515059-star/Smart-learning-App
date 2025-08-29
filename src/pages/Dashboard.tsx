@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import { getCourses } from '../utils/courseGenerator';
 import { 
   Zap, 
   Plus, 
@@ -23,64 +24,56 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
+  const [courses, setCourses] = useState(getCourses());
+
+  // Refresh courses when component mounts
+  React.useEffect(() => {
+    setCourses(getCourses());
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
-  const mockCourses = [
-    {
-      id: '1',
-      title: 'Introduction to Machine Learning',
-      type: 'youtube',
-      thumbnail: 'https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=400',
-      progress: 75,
-      lessons: 12,
-      duration: '2h 30m',
-      created: '2 days ago',
-      status: 'In Progress'
-    },
-    {
-      id: '2',
-      title: 'Advanced React Patterns',
-      type: 'pdf',
-      thumbnail: 'https://images.pexels.com/photos/11035471/pexels-photo-11035471.jpeg?auto=compress&cs=tinysrgb&w=400',
-      progress: 100,
-      lessons: 8,
-      duration: '1h 45m',
-      created: '1 week ago',
-      status: 'Completed'
-    },
-    {
-      id: '3',
-      title: 'Python Data Science Fundamentals',
-      type: 'youtube',
-      thumbnail: 'https://images.pexels.com/photos/590020/pexels-photo-590020.jpg?auto=compress&cs=tinysrgb&w=400',
-      progress: 30,
-      lessons: 15,
-      duration: '3h 15m',
-      created: '3 days ago',
-      status: 'In Progress'
-    }
-  ];
+  // Filter courses based on search query
+  const filteredCourses = courses.filter(course =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const getTimeAgo = (timestamp: number) => {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+    if (days === 0) return 'Today';
+    if (days === 1) return '1 day ago';
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+    return `${Math.floor(days / 30)} months ago`;
+  };
 
   const stats = [
     {
       title: 'Courses Created',
-      value: '12',
+      value: courses.length.toString(),
       icon: <BookOpen className="w-6 h-6" />,
       color: 'from-blue-500 to-cyan-500'
     },
     {
       title: 'Hours Learned',
-      value: '47',
+      value: Math.floor(courses.reduce((total, course) => {
+        const hours = parseFloat(course.duration.split('h')[0]) || 0;
+        return total + (hours * course.progress / 100);
+      }, 0)).toString(),
       icon: <Clock className="w-6 h-6" />,
       color: 'from-emerald-500 to-teal-500'
     },
     {
       title: 'Completion Rate',
-      value: '86%',
+      value: courses.length > 0 ? 
+        Math.round(courses.reduce((total, course) => total + course.progress, 0) / courses.length) + '%' : 
+        '0%',
       icon: <TrendingUp className="w-6 h-6" />,
       color: 'from-purple-500 to-indigo-500'
     }
@@ -214,7 +207,7 @@ const Dashboard = () => {
 
           {/* Courses Grid */}
           <div className={`grid gap-6 ${viewMode === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
-            {mockCourses.map((course, index) => (
+            {filteredCourses.map((course, index) => (
               <motion.div
                 key={course.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -243,11 +236,11 @@ const Dashboard = () => {
                     </div>
                     <div className="absolute top-4 right-4">
                       <div className={`px-2 py-1 rounded-lg text-xs font-medium ${
-                        course.status === 'Completed' 
+                        course.progress === 100
                           ? 'bg-emerald-500 text-white' 
                           : 'bg-yellow-500 text-black'
                       }`}>
-                        {course.status}
+                        {course.progress === 100 ? 'Completed' : 'In Progress'}
                       </div>
                     </div>
                   </div>
@@ -257,7 +250,7 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between text-sm text-gray-300 mb-4">
                       <span>{course.lessons} lessons</span>
                       <span>{course.duration}</span>
-                      <span>{course.created}</span>
+                      <span>{getTimeAgo(parseInt(course.id.split('-')[1]))}</span>
                     </div>
                     
                     <div className="mb-4">
@@ -278,7 +271,7 @@ const Dashboard = () => {
             ))}
           </div>
 
-          {mockCourses.length === 0 && (
+          {filteredCourses.length === 0 && courses.length === 0 && (
             <div className="text-center py-12">
               <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-300 mb-2">No courses yet</h3>
@@ -290,6 +283,14 @@ const Dashboard = () => {
                 <Plus className="w-5 h-5" />
                 <span>Create Course</span>
               </Link>
+            </div>
+          )}
+
+          {filteredCourses.length === 0 && courses.length > 0 && (
+            <div className="text-center py-12">
+              <Search className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">No courses found</h3>
+              <p className="text-gray-400">Try adjusting your search query</p>
             </div>
           )}
         </motion.div>
