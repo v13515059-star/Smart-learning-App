@@ -16,7 +16,10 @@ import {
   Calendar,
   Target,
   Award,
-  Brain
+  Brain,
+  Zap,
+  User,
+  LogOut
 } from 'lucide-react';
 
 const Dashboard = () => {
