@@ -196,4 +196,4 @@ const NotificationCenter = () => {
   );
 };
 
-export default Navbar;
+export default NotificationCenter;
