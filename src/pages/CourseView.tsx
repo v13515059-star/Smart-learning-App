@@ -5,6 +5,7 @@ import { getCourseById } from '../utils/courseGenerator';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizModal from '../components/QuizModal';
 import FlashcardDeck from '../components/FlashcardDeck';
+import ChatBot from '../components/ChatBot';
 
 interface Course {
   id: string;
@@ -215,6 +216,15 @@ export default function CourseView() {
           onClose={() => setIsQuizOpen(false)}
         />
       )}
+
+      {/* AI Tutor Chatbot */}
+      <ChatBot 
+        courseContext={{
+          title: course.title,
+          currentLesson: tabs.find(tab => tab.id === activeTab)?.label,
+          progress: 75
+        }}
+      />
     </div>
   );
 }

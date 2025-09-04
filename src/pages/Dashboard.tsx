@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { getCourses } from '../utils/courseGenerator';
+import ChatBot from '../components/ChatBot';
 import { 
   Zap, 
   Plus, 
@@ -295,6 +296,9 @@ const Dashboard = () => {
           )}
         </motion.div>
       </div>
+
+      {/* AI Tutor Chatbot */}
+      <ChatBot />
     </div>
   );
 };
