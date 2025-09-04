@@ -23,10 +23,16 @@ import {
 } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [courses, setCourses] = useState(getCourses());
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   // Refresh courses when component mounts
   React.useEffect(() => {
