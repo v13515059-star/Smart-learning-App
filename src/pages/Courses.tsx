@@ -21,6 +21,7 @@ import {
   Trash2,
   Share
 } from 'lucide-react';
+import ChatBot from '../components/ChatBot';
 
 const Courses = () => {
   const [courses] = useState(getCourses());
@@ -389,6 +390,9 @@ const Courses = () => {
           )}
         </motion.div>
       </div>
+
+      {/* AI Tutor Chatbot */}
+      <ChatBot />
     </div>
   );
 };

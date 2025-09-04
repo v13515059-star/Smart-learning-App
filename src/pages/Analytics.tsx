@@ -25,6 +25,7 @@ import {
   Zap,
   Calendar
 } from 'lucide-react';
+import ChatBot from '../components/ChatBot';
 
 const Analytics = () => {
   const courses = getCourses();
@@ -299,6 +300,9 @@ const Analytics = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* AI Tutor Chatbot */}
+      <ChatBot />
     </div>
   );
 };
