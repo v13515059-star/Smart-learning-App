@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw, SkipBack, SkipForward } from 'lucide-react';
 
 interface VideoPlayerProps {
-  videoUrl: string;
+  videoUrl?: string;
   thumbnail: string;
   title: string;
 }
@@ -19,12 +19,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnail, title })
 
   // Extract YouTube video ID from URL
   const getYouTubeVideoId = (url: string) => {
+    if (!url || typeof url !== 'string') {
+      return null;
+    }
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11 ? match[2] : null;
   };
 
-  const videoId = getYouTubeVideoId(videoUrl);
+  const videoId = videoUrl ? getYouTubeVideoId(videoUrl) : null;
   const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&modestbranding=1` : null;
 
   const togglePlay = () => {
