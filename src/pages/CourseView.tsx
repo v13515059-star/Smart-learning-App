@@ -1,40 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Play, BookOpen, Brain, GraduationCap } from 'lucide-react';
-import { getCourseById } from '../utils/courseGenerator';
+import { getCourseById, GeneratedCourse } from '../utils/courseGenerator';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizModal from '../components/QuizModal';
 import FlashcardDeck from '../components/FlashcardDeck';
 import ChatBot from '../components/ChatBot';
 
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  duration: string;
-  lessons: number;
-  notes: string;
-  quiz: {
-    questions: Array<{
-      question: string;
-      options: string[];
-      correct: number;
-      explanation: string;
-    }>;
-  };
-  flashcards: Array<{
-    front: string;
-    back: string;
-  }>;
-  videoUrl?: string;
-  createdAt: string;
-}
-
 export default function CourseView() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [course, setCourse] = useState<Course | null>(null);
+  const [course, setCourse] = useState<GeneratedCourse | null>(null);
   const [activeTab, setActiveTab] = useState('video');
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -141,7 +117,7 @@ export default function CourseView() {
                       <p className="text-gray-600">Comprehensive notes generated from your content</p>
                     </div>
                     <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                      {course.notes}
+                      {course.notes[0]?.content || 'No notes available'}
                     </div>
                   </div>
                 )}
@@ -152,7 +128,7 @@ export default function CourseView() {
                       <Brain className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">Test Your Knowledge</h3>
                       <p className="text-gray-600 mb-6">
-                        Challenge yourself with {course.quiz.questions.length} questions based on the course content
+                        Challenge yourself with {course.quizzes[0]?.questions.length || 0} questions based on the course content
                       </p>
                       <button
                         onClick={() => setIsQuizOpen(true)}
@@ -191,7 +167,7 @@ export default function CourseView() {
                 </div>
                 <div className="flex justify-between">
                   <span>Questions:</span>
-                  <span className="font-medium">{course.quiz.questions.length}</span>
+                  <span className="font-medium">{course.quizzes[0]?.questions.length || 0}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Flashcards:</span>
@@ -212,8 +188,9 @@ export default function CourseView() {
       {/* Quiz Modal */}
       {isQuizOpen && (
         <QuizModal
-          quiz={course.quiz}
+          quiz={course.quizzes[0]}
           onClose={() => setIsQuizOpen(false)}
+          onComplete={() => setIsQuizOpen(false)}
         />
       )}
 
