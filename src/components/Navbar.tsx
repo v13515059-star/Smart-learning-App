@@ -44,7 +44,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center space-x-2">
             <Zap className="w-8 h-8 text-emerald-400" />
-            <span className="text-2xl font-bold text-white">CourseForge</span>
+            <span className="text-2xl font-bold text-white">MindSphere AI</span>
           </Link>
 
           {/* Desktop Navigation */}

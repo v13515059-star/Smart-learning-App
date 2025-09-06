@@ -207,7 +207,7 @@ const CreateCourse = () => {
               </Link>
               <div className="flex items-center space-x-2">
                 <Zap className="w-8 h-8 text-emerald-400" />
-                <span className="text-2xl font-bold text-white">CourseForge</span>
+                <span className="text-2xl font-bold text-white">MindSphere AI</span>
               </div>
             </div>
           </div>

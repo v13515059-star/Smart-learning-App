@@ -39,7 +39,7 @@ const SignIn = () => {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <Zap className="w-8 h-8 text-emerald-400" />
-              <span className="text-2xl font-bold text-white">CourseForge</span>
+              <span className="text-2xl font-bold text-white">MindSphere AI</span>
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
             <p className="text-gray-300">Sign in to continue your learning journey</p>

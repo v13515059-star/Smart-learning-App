@@ -38,7 +38,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseContext }) => {
       id: '1',
       content: courseContext 
         ? `Hi! I'm your AI tutor for "${courseContext.title}". I'm here to help you understand the concepts, answer questions, and guide your learning. What would you like to know?`
-        : "Hi! I'm your AI learning assistant. I can help you understand concepts, create study materials, answer questions, and guide your learning journey. How can I assist you today?",
+        : "Hi! I'm your MindSphere AI learning assistant. I can help you understand concepts, create study materials, answer questions, and guide your learning journey. How can I assist you today?",
       sender: 'ai',
       timestamp: new Date(),
       type: 'text'
@@ -141,7 +141,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseContext }) => {
       id: '1',
       content: courseContext 
         ? `Hi! I'm your AI tutor for "${courseContext.title}". I'm here to help you understand the concepts, answer questions, and guide your learning. What would you like to know?`
-        : "Hi! I'm your AI learning assistant. How can I help you today?",
+        : "Hi! I'm your MindSphere AI learning assistant. How can I help you today?",
       sender: 'ai',
       timestamp: new Date(),
       type: 'text'

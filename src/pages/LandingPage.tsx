@@ -34,7 +34,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Zap className="w-8 h-8 text-emerald-400" />
-            <span className="text-2xl font-bold text-white">CourseForge</span>
+            <span className="text-2xl font-bold text-white">MindSphere AI</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
@@ -61,16 +61,21 @@ const LandingPage = () => {
               <span className="bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent"> Complete Courses</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto">
-              Paste a YouTube video or upload a PDF, and watch AI create comprehensive lecture notes, interactive quizzes, and smart flashcards in seconds.
+              Paste a YouTube video or upload a PDF, and watch MindSphere AI create comprehensive lecture notes, interactive quizzes, and smart flashcards in seconds.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
               <Link to="/signup" className="bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-emerald-600 hover:to-blue-700 transition-all transform hover:scale-105 flex items-center space-x-2">
                 <span>Start Creating</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
-              <button className="text-white border border-gray-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all">
+              <a 
+                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-white border border-gray-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all inline-block"
+              >
                 Watch Demo
-              </button>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -184,7 +189,7 @@ const LandingPage = () => {
               Ready to revolutionize your learning?
             </h2>
             <p className="text-xl text-gray-300">
-              Join thousands of learners who are already using CourseForge to master new skills faster than ever.
+              Join thousands of learners who are already using MindSphere AI to master new skills faster than ever.
             </p>
             <Link to="/signup" className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-emerald-600 hover:to-blue-700 transition-all transform hover:scale-105">
               <span>Get Started Free</span>
