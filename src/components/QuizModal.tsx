@@ -27,6 +27,16 @@ const QuizModal: React.FC<QuizModalProps> = ({ isOpen, onClose, quiz, onComplete
   const [showResults, setShowResults] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
 
+  // Reset quiz state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentQuestion(0);
+      setSelectedAnswers({});
+      setShowResults(false);
+      setQuizCompleted(false);
+    }
+  }, [isOpen]);
+
   const handleAnswerSelect = (questionId: number, answerIndex: number) => {
     setSelectedAnswers(prev => ({
       ...prev,

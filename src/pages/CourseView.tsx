@@ -50,11 +50,22 @@ export default function CourseView() {
   }
 
   const tabs = [
-    { id: 'video', label: 'Video', icon: Play },
     { id: 'notes', label: 'Notes', icon: BookOpen },
     { id: 'quiz', label: 'Quiz', icon: Brain },
     { id: 'flashcards', label: 'Flashcards', icon: GraduationCap },
   ];
+
+  // Filter tabs based on course type
+  const availableTabs = course?.type === 'pdf' 
+    ? tabs.filter(tab => tab.id !== 'video')
+    : tabs;
+
+  // Set default active tab based on course type
+  useEffect(() => {
+    if (course?.type === 'pdf' && activeTab === 'video') {
+      setActiveTab('notes');
+    }
+  }, [course, activeTab]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -85,7 +96,7 @@ export default function CourseView() {
             {/* Tab Navigation */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
               <div className="flex border-b border-gray-200">
-                {tabs.map((tab) => {
+                {availableTabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
@@ -106,7 +117,7 @@ export default function CourseView() {
 
               {/* Tab Content */}
               <div className="p-6">
-                {activeTab === 'video' && (
+                {activeTab === 'video' && course?.type === 'youtube' && (
                   <VideoPlayer videoUrl={course.videoUrl} />
                 )}
 
@@ -186,8 +197,9 @@ export default function CourseView() {
       </div>
 
       {/* Quiz Modal */}
-      {isQuizOpen && (
+      {isQuizOpen && course?.quizzes?.[0] && (
         <QuizModal
+          isOpen={isQuizOpen}
           quiz={course.quizzes[0]}
           onClose={() => setIsQuizOpen(false)}
           onComplete={() => setIsQuizOpen(false)}
