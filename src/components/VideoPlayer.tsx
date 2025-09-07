@@ -3,11 +3,9 @@ import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw, SkipBack, SkipForwa
 
 interface VideoPlayerProps {
   videoUrl?: string;
-  thumbnail: string;
-  title: string;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnail, title }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -120,7 +118,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnail, title })
       <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
         <iframe
           src={embedUrl}
-          title={title}
+          title="Course Video"
           className="w-full h-full"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -141,7 +139,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnail, title })
       <video
         ref={videoRef}
         className="w-full h-full object-cover"
-        poster={thumbnail}
+        poster="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=800"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onPlay={() => setIsPlaying(true)}

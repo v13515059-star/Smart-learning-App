@@ -565,6 +565,7 @@ export const generateCourseFromYoutube = (url: string): GeneratedCourse => {
     id: `youtube-${Date.now()}`,
     type: 'youtube',
     videoUrl: url,
+    createdAt: Date.now(),
     progress: Math.floor(Math.random() * 50) + 25, // Random progress between 25-75%
     ...template,
     notes: template.notes.map((note, index) => ({ ...note, id: index + 1 })),
@@ -578,14 +579,438 @@ export const generateCourseFromYoutube = (url: string): GeneratedCourse => {
 };
 
 export const generateCourseFromPdf = (file: File): GeneratedCourse => {
-  // Use file name or size to determine which template to use
-  const templateIndex = Math.abs(file.name.split('').reduce((a, b) => a + b.charCodeAt(0), 0)) % pdfCourseTemplates.length;
-  const template = pdfCourseTemplates[templateIndex];
+  // Analyze file name to determine content type and generate appropriate course
+  const fileName = file.name.toLowerCase();
+  let template;
+  
+  // Determine course type based on file name keywords
+  if (fileName.includes('javascript') || fileName.includes('js') || fileName.includes('react') || fileName.includes('node')) {
+    template = {
+      title: `JavaScript Programming - ${file.name.replace('.pdf', '')}`,
+      description: 'Master JavaScript concepts, ES6+ features, and modern development practices extracted from your PDF.',
+      thumbnail: 'https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=800',
+      duration: '2h 45m',
+      lessons: 16,
+      notes: [
+        {
+          title: 'JavaScript Fundamentals from PDF',
+          content: `# JavaScript Core Concepts
+
+Based on the content from "${file.name}", here are the key JavaScript concepts covered:
+
+## Variables and Data Types
+JavaScript supports various data types including:
+- **Primitive types**: string, number, boolean, undefined, null, symbol
+- **Reference types**: objects, arrays, functions
+
+## Functions and Scope
+- Function declarations vs expressions
+- Arrow functions and their behavior
+- Lexical scoping and closures
+- The 'this' keyword context
+
+## Modern JavaScript Features
+- Template literals for string interpolation
+- Destructuring assignment
+- Spread and rest operators
+- Async/await for handling promises
+
+## Best Practices
+- Use const and let instead of var
+- Implement proper error handling
+- Follow consistent naming conventions
+- Write modular, reusable code`,
+          duration: '20 min read'
+        },
+        {
+          title: 'Advanced JavaScript Patterns',
+          content: `# Advanced Programming Patterns
+
+## Object-Oriented Programming
+- Classes and inheritance
+- Prototypal inheritance
+- Encapsulation and data privacy
+
+## Functional Programming
+- Higher-order functions
+- Map, filter, and reduce operations
+- Pure functions and immutability
+
+## Asynchronous Programming
+- Promises and promise chaining
+- Async/await syntax
+- Error handling in async code
+
+## Module Systems
+- ES6 modules (import/export)
+- CommonJS modules
+- Module bundling concepts`,
+          duration: '25 min read'
+        }
+      ],
+      quizzes: [
+        {
+          title: 'JavaScript Knowledge Check',
+          questions: [
+            {
+              question: 'What is the difference between let and const in JavaScript?',
+              options: [
+                'let is for strings, const is for numbers',
+                'let allows reassignment, const does not',
+                'const is faster than let',
+                'There is no difference'
+              ],
+              correctAnswer: 1,
+              explanation: 'let allows reassignment of the variable, while const creates a constant reference that cannot be reassigned.'
+            },
+            {
+              question: 'What does the spread operator (...) do in JavaScript?',
+              options: [
+                'Creates a new variable',
+                'Expands an iterable into individual elements',
+                'Deletes array elements',
+                'Converts strings to arrays'
+              ],
+              correctAnswer: 1,
+              explanation: 'The spread operator expands an iterable (like an array) into individual elements, useful for copying arrays or passing arguments.'
+            },
+            {
+              question: 'What is a closure in JavaScript?',
+              options: [
+                'A way to close the browser',
+                'A function that has access to outer scope variables',
+                'A method to end loops',
+                'A type of error handling'
+              ],
+              correctAnswer: 1,
+              explanation: 'A closure is a function that has access to variables in its outer (enclosing) scope even after the outer function has returned.'
+            }
+          ]
+        }
+      ],
+      flashcards: [
+        {
+          question: 'What is hoisting in JavaScript?',
+          answer: 'Hoisting is JavaScript\'s behavior of moving variable and function declarations to the top of their scope during compilation.',
+          category: 'Core Concepts'
+        },
+        {
+          question: 'What is the difference between == and === in JavaScript?',
+          answer: '== performs type coercion before comparison, while === compares both value and type without coercion.',
+          category: 'Operators'
+        }
+      ]
+    };
+  } else if (fileName.includes('python') || fileName.includes('data') || fileName.includes('ml') || fileName.includes('ai')) {
+    template = {
+      title: `Python Data Science - ${file.name.replace('.pdf', '')}`,
+      description: 'Learn Python programming, data analysis, and machine learning concepts from your PDF content.',
+      thumbnail: 'https://images.pexels.com/photos/590020/pexels-photo-590020.jpg?auto=compress&cs=tinysrgb&w=800',
+      duration: '3h 30m',
+      lessons: 20,
+      notes: [
+        {
+          title: 'Python Programming Essentials',
+          content: `# Python Programming from "${file.name}"
+
+## Python Basics
+- Variables and data types
+- Control structures (if, for, while)
+- Functions and modules
+- Exception handling
+
+## Data Structures
+- Lists, tuples, and dictionaries
+- Sets and their operations
+- List comprehensions
+- Generator expressions
+
+## Object-Oriented Programming
+- Classes and objects
+- Inheritance and polymorphism
+- Special methods (__init__, __str__, etc.)
+
+## File Handling and I/O
+- Reading and writing files
+- Working with CSV and JSON
+- File system operations`,
+          duration: '22 min read'
+        }
+      ],
+      quizzes: [
+        {
+          title: 'Python Programming Quiz',
+          questions: [
+            {
+              question: 'What is the difference between a list and a tuple in Python?',
+              options: [
+                'Lists are faster than tuples',
+                'Lists are mutable, tuples are immutable',
+                'Tuples can only store numbers',
+                'There is no difference'
+              ],
+              correctAnswer: 1,
+              explanation: 'Lists are mutable (can be changed after creation) while tuples are immutable (cannot be changed after creation).'
+            }
+          ]
+        }
+      ],
+      flashcards: [
+        {
+          question: 'What is a Python list comprehension?',
+          answer: 'A concise way to create lists using a single line of code with optional conditions.',
+          category: 'Data Structures'
+        }
+      ]
+    };
+  } else if (fileName.includes('database') || fileName.includes('sql') || fileName.includes('db')) {
+    template = {
+      title: `Database Management - ${file.name.replace('.pdf', '')}`,
+      description: 'Master database design, SQL queries, and data management principles from your PDF.',
+      thumbnail: 'https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&w=800',
+      duration: '2h 15m',
+      lessons: 14,
+      notes: [
+        {
+          title: 'Database Design Principles',
+          content: `# Database Management from "${file.name}"
+
+## Database Fundamentals
+- What is a database?
+- DBMS vs Database
+- Types of databases (Relational, NoSQL)
+
+## SQL Basics
+- SELECT statements
+- WHERE clauses and filtering
+- JOIN operations
+- Aggregate functions
+
+## Database Design
+- Entity-Relationship modeling
+- Normalization principles
+- Primary and foreign keys
+- Indexing strategies`,
+          duration: '18 min read'
+        }
+      ],
+      quizzes: [
+        {
+          title: 'Database Knowledge Test',
+          questions: [
+            {
+              question: 'What is the purpose of database normalization?',
+              options: [
+                'To make databases faster',
+                'To reduce data redundancy and improve integrity',
+                'To increase storage space',
+                'To make queries more complex'
+              ],
+              correctAnswer: 1,
+              explanation: 'Database normalization reduces data redundancy and improves data integrity by organizing data efficiently.'
+            }
+          ]
+        }
+      ],
+      flashcards: [
+        {
+          question: 'What is a primary key?',
+          answer: 'A unique identifier for each record in a database table that cannot be null.',
+          category: 'Database Design'
+        }
+      ]
+    };
+  } else if (fileName.includes('web') || fileName.includes('html') || fileName.includes('css') || fileName.includes('frontend')) {
+    template = {
+      title: `Web Development - ${file.name.replace('.pdf', '')}`,
+      description: 'Learn modern web development techniques, HTML, CSS, and frontend frameworks from your PDF.',
+      thumbnail: 'https://images.pexels.com/photos/11035471/pexels-photo-11035471.jpeg?auto=compress&cs=tinysrgb&w=800',
+      duration: '3h 00m',
+      lessons: 18,
+      notes: [
+        {
+          title: 'Web Development Fundamentals',
+          content: `# Web Development from "${file.name}"
+
+## HTML Structure
+- Semantic HTML elements
+- Forms and input validation
+- Accessibility best practices
+
+## CSS Styling
+- Selectors and specificity
+- Flexbox and Grid layouts
+- Responsive design principles
+- CSS animations and transitions
+
+## JavaScript Integration
+- DOM manipulation
+- Event handling
+- AJAX and fetch API
+- Modern ES6+ features`,
+          duration: '25 min read'
+        }
+      ],
+      quizzes: [
+        {
+          title: 'Web Development Quiz',
+          questions: [
+            {
+              question: 'What is the difference between HTML and HTML5?',
+              options: [
+                'HTML5 is faster',
+                'HTML5 includes semantic elements and multimedia support',
+                'HTML5 only works in Chrome',
+                'There is no difference'
+              ],
+              correctAnswer: 1,
+              explanation: 'HTML5 introduced semantic elements, multimedia support, and many new APIs compared to earlier HTML versions.'
+            }
+          ]
+        }
+      ],
+      flashcards: [
+        {
+          question: 'What is responsive web design?',
+          answer: 'An approach to web design that makes web pages render well on different devices and screen sizes.',
+          category: 'Design Principles'
+        }
+      ]
+    };
+  } else {
+    // Generic template for other PDFs
+    template = {
+      title: `Learning Course - ${file.name.replace('.pdf', '')}`,
+      description: `Comprehensive learning materials extracted and organized from your PDF: ${file.name}`,
+      thumbnail: 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=800',
+      duration: '2h 30m',
+      lessons: 15,
+      notes: [
+        {
+          title: `Key Concepts from ${file.name}`,
+          content: `# Learning Materials from "${file.name}"
+
+## Document Overview
+This course has been generated from your uploaded PDF document. The content has been analyzed and organized into structured learning materials.
+
+## Main Topics Covered
+Based on the document analysis, the following areas are covered:
+
+### Core Concepts
+- Fundamental principles and definitions
+- Key terminology and vocabulary
+- Important theories and frameworks
+
+### Practical Applications
+- Real-world examples and case studies
+- Implementation strategies
+- Best practices and guidelines
+
+### Advanced Topics
+- Complex concepts and relationships
+- Integration with other subjects
+- Future trends and developments
+
+## Study Recommendations
+1. Review the key concepts thoroughly
+2. Practice with the provided quizzes
+3. Use flashcards for memorization
+4. Apply concepts to real scenarios`,
+          duration: '20 min read'
+        },
+        {
+          title: 'Detailed Analysis and Applications',
+          content: `# In-Depth Study Guide
+
+## Methodology
+The content from your PDF has been structured using proven educational methodologies:
+
+### Learning Objectives
+- Understand core principles
+- Apply knowledge practically
+- Analyze complex scenarios
+- Synthesize information effectively
+
+### Study Techniques
+- Active reading strategies
+- Note-taking methods
+- Memory enhancement techniques
+- Critical thinking approaches
+
+## Assessment and Review
+Regular assessment helps reinforce learning:
+- Self-evaluation quizzes
+- Concept mapping exercises
+- Practical applications
+- Peer discussions`,
+          duration: '18 min read'
+        }
+      ],
+      quizzes: [
+        {
+          title: 'Document Comprehension Quiz',
+          questions: [
+            {
+              question: 'What is the main focus of the uploaded document?',
+              options: [
+                'Theoretical concepts and principles',
+                'Practical applications and examples',
+                'Historical background and context',
+                'All of the above'
+              ],
+              correctAnswer: 3,
+              explanation: 'Most educational documents combine theoretical concepts, practical applications, and contextual background for comprehensive learning.'
+            },
+            {
+              question: 'Which study technique is most effective for retaining information?',
+              options: [
+                'Passive reading only',
+                'Active engagement with the material',
+                'Memorizing without understanding',
+                'Skipping difficult sections'
+              ],
+              correctAnswer: 1,
+              explanation: 'Active engagement with the material through questioning, summarizing, and applying concepts leads to better retention.'
+            },
+            {
+              question: 'How should you approach complex topics in the document?',
+              options: [
+                'Skip them entirely',
+                'Memorize them word for word',
+                'Break them down into smaller parts',
+                'Only read them once'
+              ],
+              correctAnswer: 2,
+              explanation: 'Breaking complex topics into smaller, manageable parts makes them easier to understand and remember.'
+            }
+          ]
+        }
+      ],
+      flashcards: [
+        {
+          question: 'What is active learning?',
+          answer: 'A learning approach that engages students in the process through activities and critical thinking rather than passive listening.',
+          category: 'Learning Methods'
+        },
+        {
+          question: 'Why is spaced repetition effective?',
+          answer: 'It leverages the psychological spacing effect, where information is better retained when reviewed at increasing intervals.',
+          category: 'Memory Techniques'
+        },
+        {
+          question: 'What is the purpose of formative assessment?',
+          answer: 'To provide ongoing feedback during the learning process to help students improve their understanding.',
+          category: 'Assessment'
+        }
+      ]
+    };
+  }
   
   return {
     id: `pdf-${Date.now()}`,
     type: 'pdf',
-    progress: Math.floor(Math.random() * 30) + 10, // Random progress between 10-40%
+    progress: 0, // Start with 0% progress for new courses
+    createdAt: Date.now(),
     ...template,
     notes: template.notes.map((note, index) => ({ ...note, id: index + 1 })),
     quizzes: template.quizzes.map((quiz, index) => ({
