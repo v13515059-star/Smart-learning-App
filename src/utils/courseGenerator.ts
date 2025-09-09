@@ -581,6 +581,7 @@ export const generateCourseFromYoutube = (url: string): GeneratedCourse => {
 export const generateCourseFromPdf = (file: File): GeneratedCourse => {
   // Analyze file name to determine content type and generate appropriate course
   const fileName = file.name.toLowerCase();
+  const timestamp = Date.now();
   let template;
   
   // Determine course type based on file name keywords
@@ -1007,10 +1008,10 @@ Regular assessment helps reinforce learning:
   }
   
   return {
-    id: `pdf-${Date.now()}`,
+    id: `pdf-${timestamp}`,
     type: 'pdf',
     progress: 0, // Start with 0% progress for new courses
-    createdAt: Date.now(),
+    createdAt: timestamp,
     ...template,
     notes: template.notes.map((note, index) => ({ ...note, id: index + 1 })),
     quizzes: template.quizzes.map((quiz, index) => ({
@@ -1032,15 +1033,22 @@ const extractYouTubeVideoId = (url: string): string | null => {
 export const saveCourse = (course: GeneratedCourse): void => {
   const courses = getCourses();
   courses.push(course);
+  console.log('Saving course:', course);
+  console.log('All courses:', courses);
   localStorage.setItem('courseforge_courses', JSON.stringify(courses));
 };
 
 export const getCourses = (): GeneratedCourse[] => {
   const stored = localStorage.getItem('courseforge_courses');
-  return stored ? JSON.parse(stored) : [];
+  const courses = stored ? JSON.parse(stored) : [];
+  console.log('Retrieved courses:', courses);
+  return courses;
 };
 
 export const getCourseById = (id: string): GeneratedCourse | null => {
   const courses = getCourses();
-  return courses.find(course => course.id === id) || null;
+  const course = courses.find(course => course.id === id) || null;
+  console.log('Looking for course with ID:', id);
+  console.log('Found course:', course);
+  return course;
 };

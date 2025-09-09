@@ -66,17 +66,21 @@ const CreateCourse = () => {
       generatedCourse = generateCourseFromPdf(selectedFile);
     }
     
+    // Always save the course if generated
     if (generatedCourse) {
       saveCourse(generatedCourse);
+      setProcessing(false);
+      setCourseGenerated(true);
+      
+      // Redirect to course view after a short delay
+      setTimeout(() => {
+        navigate(`/course/${generatedCourse.id}`);
+      }, 2000);
+    } else {
+      // Handle error case
+      setProcessing(false);
+      alert('Failed to generate course. Please try again.');
     }
-    
-    setProcessing(false);
-    setCourseGenerated(true);
-    
-    // Redirect to course view after a short delay
-    setTimeout(() => {
-      navigate(`/course/${generatedCourse?.id || 'new-course'}`);
-    }, 2000);
   };
 
   const processingSteps = [

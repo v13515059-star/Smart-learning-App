@@ -18,8 +18,12 @@ export default function CourseView() {
   useEffect(() => {
     if (id) {
       const courseData = getCourseById(id);
+      console.log('Course ID:', id);
+      console.log('Course Data:', courseData);
       if (courseData) {
         setCourse(courseData);
+      } else {
+        console.error('Course not found for ID:', id);
       }
       setLoading(false);
     }
