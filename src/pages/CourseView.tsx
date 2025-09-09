@@ -29,6 +29,12 @@ export default function CourseView() {
     }
   }, [id]);
 
+  // Set default active tab based on course type
+  useEffect(() => {
+    if (course?.type === 'pdf' && activeTab === 'video') {
+      setActiveTab('notes');
+    }
+  }, [course, activeTab]);
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
@@ -64,12 +70,6 @@ export default function CourseView() {
     ? tabs.filter(tab => tab.id !== 'video')
     : tabs;
 
-  // Set default active tab based on course type
-  useEffect(() => {
-    if (course?.type === 'pdf' && activeTab === 'video') {
-      setActiveTab('notes');
-    }
-  }, [course, activeTab]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
