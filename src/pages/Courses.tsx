@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { getCourses } from '../utils/courseGenerator';
+import { apiService } from '../services/api';
 import { 
   BookOpen, 
   Video, 
@@ -24,13 +24,29 @@ import {
 import ChatBot from '../components/ChatBot';
 
 const Courses = () => {
-  const [courses] = useState(getCourses());
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'recent' | 'progress' | 'title'>('recent');
   const [filterBy, setFilterBy] = useState<'all' | 'youtube' | 'pdf' | 'completed' | 'in-progress'>('all');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
+  // Fetch courses when component mounts
+  React.useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await apiService.getCourses();
+        setCourses(data.courses);
+      } catch (error) {
+        console.error('Failed to fetch courses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
   // Filter and sort courses
   const filteredAndSortedCourses = courses
     .filter(course => {
@@ -46,7 +62,7 @@ const Courses = () => {
       let comparison = 0;
       switch (sortBy) {
         case 'recent':
-          comparison = parseInt(b.id.split('-')[1]) - parseInt(a.id.split('-')[1]);
+          comparison = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
           break;
         case 'progress':
           comparison = b.progress - a.progress;
@@ -60,7 +76,7 @@ const Courses = () => {
 
   const getTimeAgo = (timestamp: number) => {
     const now = Date.now();
-    const diff = now - timestamp;
+    const diff = now - new Date(timestamp).getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     
     if (days === 0) return 'Today';
@@ -70,6 +86,13 @@ const Courses = () => {
     return `${Math.floor(days / 30)} months ago`;
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-400"></div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -217,7 +240,7 @@ const Courses = () => {
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Link
-                          to={`/course/${course.id}`}
+                          to={`/course/${course._id}`}
                           className="bg-white/20 backdrop-blur-lg rounded-full p-4 hover:bg-white/30 transition-all"
                         >
                           <Play className="w-8 h-8 text-white" />
@@ -249,7 +272,7 @@ const Courses = () => {
                       <div className="flex items-center justify-between text-sm text-gray-300 mb-4">
                         <span>{course.lessons} lessons</span>
                         <span>{course.duration}</span>
-                        <span>{getTimeAgo(parseInt(course.id.split('-')[1]))}</span>
+                        <span>{getTimeAgo(course.createdAt)}</span>
                       </div>
                       
                       <div className="mb-4">
@@ -267,7 +290,7 @@ const Courses = () => {
 
                       <div className="flex items-center space-x-2">
                         <Link
-                          to={`/course/${course.id}`}
+                          to={`/course/${course._id}`}
                           className="flex-1 bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 transition-colors text-center font-medium"
                         >
                           Continue
@@ -332,7 +355,7 @@ const Courses = () => {
                           </span>
                           <span className="flex items-center space-x-1">
                             <Calendar className="w-4 h-4" />
-                            <span>{getTimeAgo(parseInt(course.id.split('-')[1]))}</span>
+                            <span>{getTimeAgo(course.createdAt)}</span>
                           </span>
                         </div>
                         
@@ -359,7 +382,7 @@ const Courses = () => {
                             </svg>
                           </div>
                           <Link
-                            to={`/course/${course.id}`}
+                            to={`/course/${course._id}`}
                             className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors font-medium"
                           >
                             Continue

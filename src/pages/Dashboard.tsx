@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { getCourses } from '../utils/courseGenerator';
+import { apiService } from '../services/api';
 import ChatBot from '../components/ChatBot';
 import { 
   Zap, 
@@ -25,11 +25,32 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
-  const [courses, setCourses] = useState(getCourses());
+  const [courses, setCourses] = useState<any[]>([]);
+  const [stats, setStats] = useState({
+    totalCourses: 0,
+    totalHours: 0,
+    averageProgress: 0
+  });
+  const [loading, setLoading] = useState(true);
 
-  // Refresh courses when component mounts
+  // Fetch courses and stats when component mounts
   React.useEffect(() => {
-    setCourses(getCourses());
+    const fetchData = async () => {
+      try {
+        const [coursesData, statsData] = await Promise.all([
+          apiService.getCourses(),
+          apiService.getUserStats()
+        ]);
+        setCourses(coursesData.courses);
+        setStats(statsData.stats);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleLogout = () => {
@@ -44,7 +65,7 @@ const Dashboard = () => {
 
   const getTimeAgo = (timestamp: number) => {
     const now = Date.now();
-    const diff = now - timestamp;
+    const diff = now - new Date(timestamp).getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     
     if (days === 0) return 'Today';
@@ -54,31 +75,34 @@ const Dashboard = () => {
     return `${Math.floor(days / 30)} months ago`;
   };
 
-  const stats = [
+  const statsDisplay = [
     {
       title: 'Courses Created',
-      value: courses.length.toString(),
+      value: stats.totalCourses.toString(),
       icon: <BookOpen className="w-6 h-6" />,
       color: 'from-blue-500 to-cyan-500'
     },
     {
       title: 'Hours Learned',
-      value: Math.floor(courses.reduce((total, course) => {
-        const hours = parseFloat(course.duration.split('h')[0]) || 0;
-        return total + (hours * course.progress / 100);
-      }, 0)).toString(),
+      value: stats.totalHours.toString(),
       icon: <Clock className="w-6 h-6" />,
       color: 'from-emerald-500 to-teal-500'
     },
     {
       title: 'Completion Rate',
-      value: courses.length > 0 ? 
-        Math.round(courses.reduce((total, course) => total + course.progress, 0) / courses.length) + '%' : 
-        '0%',
+      value: `${stats.averageProgress}%`,
       icon: <TrendingUp className="w-6 h-6" />,
       color: 'from-purple-500 to-indigo-500'
     }
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-400"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -127,7 +151,7 @@ const Dashboard = () => {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="grid md:grid-cols-3 gap-6 mb-12"
         >
-          {stats.map((stat, index) => (
+          {statsDisplay.map((stat, index) => (
             <div key={index} className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-3 rounded-lg bg-gradient-to-r ${stat.color} text-white`}>
@@ -216,7 +240,7 @@ const Dashboard = () => {
                 transition={{ duration: 0.8, delay: 0.1 * index }}
               >
                 <Link
-                  to={`/course/${course.id}`}
+                  to={`/course/${course._id}`}
                   className="block bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden border border-white/20 hover:bg-white/15 transition-all transform hover:scale-[1.02]"
                 >
                   <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-600 relative overflow-hidden">
@@ -251,7 +275,7 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between text-sm text-gray-300 mb-4">
                       <span>{course.lessons} lessons</span>
                       <span>{course.duration}</span>
-                      <span>{getTimeAgo(parseInt(course.id.split('-')[1]))}</span>
+                      <span>{getTimeAgo(course.createdAt)}</span>
                     </div>
                     
                     <div className="mb-4">

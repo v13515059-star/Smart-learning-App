@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { generateCourseFromYoutube, generateCourseFromPdf, saveCourse } from '../utils/courseGenerator';
+import { apiService } from '../services/api';
 import ChatBot from '../components/ChatBot';
 import { 
   Zap, 
@@ -55,31 +55,30 @@ const CreateCourse = () => {
   const generateCourse = async () => {
     setProcessing(true);
     
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    // Generate course based on input type
-    let generatedCourse;
-    if (activeTab === 'youtube' && youtubeUrl.trim()) {
-      generatedCourse = generateCourseFromYoutube(youtubeUrl);
-    } else if (activeTab === 'pdf' && selectedFile) {
-      generatedCourse = generateCourseFromPdf(selectedFile);
-    }
-    
-    // Always save the course if generated
-    if (generatedCourse) {
-      saveCourse(generatedCourse);
+    try {
+      // Simulate AI processing time
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      let courseData;
+      if (activeTab === 'youtube' && youtubeUrl.trim()) {
+        courseData = await apiService.createYoutubeCourse(youtubeUrl);
+      } else if (activeTab === 'pdf' && selectedFile) {
+        courseData = await apiService.createPdfCourse(selectedFile);
+      } else {
+        throw new Error('Please provide valid input');
+      }
+      
       setProcessing(false);
       setCourseGenerated(true);
       
       // Redirect to course view after a short delay
       setTimeout(() => {
-        navigate(`/course/${generatedCourse.id}`);
+        navigate(`/course/${courseData.course._id}`);
       }, 2000);
-    } else {
-      // Handle error case
+    } catch (error) {
+      console.error('Course generation failed:', error);
       setProcessing(false);
-      alert('Failed to generate course. Please try again.');
+      alert(`Failed to generate course: ${error.message}`);
     }
   };
 

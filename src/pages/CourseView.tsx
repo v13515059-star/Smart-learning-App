@@ -1,32 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Play, BookOpen, Brain, GraduationCap } from 'lucide-react';
-import { getCourseById, GeneratedCourse } from '../utils/courseGenerator';
+import { apiService } from '../services/api';
 import VideoPlayer from '../components/VideoPlayer';
 import QuizModal from '../components/QuizModal';
 import FlashcardDeck from '../components/FlashcardDeck';
 import ChatBot from '../components/ChatBot';
 
+interface Course {
+  _id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  videoUrl?: string;
+  duration: string;
+  lessons: number;
+  progress: number;
+  type: 'youtube' | 'pdf';
+  notes: Array<{
+    title: string;
+    content: string;
+    duration: string;
+  }>;
+  quizzes: Array<{
+    title: string;
+    questions: Array<{
+      question: string;
+      options: string[];
+      correctAnswer: number;
+      explanation: string;
+    }>;
+  }>;
+  flashcards: Array<{
+    question: string;
+    answer: string;
+    category: string;
+  }>;
+  createdAt: string;
+}
+
 export default function CourseView() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [course, setCourse] = useState<GeneratedCourse | null>(null);
+  const [course, setCourse] = useState<Course | null>(null);
   const [activeTab, setActiveTab] = useState('video');
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id) {
-      const courseData = getCourseById(id);
-      console.log('Course ID:', id);
-      console.log('Course Data:', courseData);
-      if (courseData) {
-        setCourse(courseData);
-      } else {
-        console.error('Course not found for ID:', id);
+    const fetchCourse = async () => {
+      if (!id) return;
+      
+      try {
+        const data = await apiService.getCourse(id);
+        setCourse(data.course);
+      } catch (error) {
+        console.error('Failed to fetch course:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    }
+    };
+
+    fetchCourse();
   }, [id]);
 
   // Set default active tab based on course type
@@ -143,7 +178,7 @@ export default function CourseView() {
                       <Brain className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">Test Your Knowledge</h3>
                       <p className="text-gray-600 mb-6">
-                        Challenge yourself with {course.quizzes[0]?.questions.length || 0} questions based on the course content
+                        Challenge yourself with {course.quizzes?.[0]?.questions?.length || 0} questions based on the course content
                       </p>
                       <button
                         onClick={() => setIsQuizOpen(true)}
@@ -182,7 +217,7 @@ export default function CourseView() {
                 </div>
                 <div className="flex justify-between">
                   <span>Questions:</span>
-                  <span className="font-medium">{course.quizzes[0]?.questions.length || 0}</span>
+                  <span className="font-medium">{course.quizzes?.[0]?.questions?.length || 0}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Flashcards:</span>

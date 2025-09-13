@@ -1,9 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { apiService } from '../services/api';
 
 interface User {
-  id: string;
+  _id: string;
   email: string;
   name: string;
+  preferences?: any;
+  notifications?: any;
+  privacy?: any;
+  stats?: any;
 }
 
 interface AuthContextType {
@@ -29,61 +34,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    const savedUser = localStorage.getItem('courseforge_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+    // Check for existing token and get user data
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      apiService.getCurrentUser()
+        .then(data => {
+          setUser(data.user);
+        })
+        .catch(error => {
+          console.error('Failed to get current user:', error);
+          localStorage.removeItem('auth_token');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // For demo purposes, use a default name or extract from email
-    let displayName = 'User';
-    
-    // If email contains common patterns, use appropriate names
-    if (email.toLowerCase().includes('uday')) {
-      displayName = 'Uday Gupta';
-    } else if (email.toLowerCase().includes('john')) {
-      displayName = 'John Smith';
-    } else if (email.toLowerCase().includes('jane')) {
-      displayName = 'Jane Doe';
-    } else {
-      // Extract name from email and capitalize
-      const nameFromEmail = email.split('@')[0];
-      displayName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+    try {
+      const data = await apiService.login(email, password);
+      setUser(data.user);
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
     }
-    
-    const mockUser = {
-      id: '1',
-      email,
-      name: displayName
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem('courseforge_user', JSON.stringify(mockUser));
   };
 
   const signup = async (name: string, email: string, password: string) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const mockUser = {
-      id: '1',
-      email,
-      name
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem('courseforge_user', JSON.stringify(mockUser));
+    try {
+      const data = await apiService.register(name, email, password);
+      setUser(data.user);
+    } catch (error) {
+      console.error('Signup failed:', error);
+      throw error;
+    }
   };
 
   const logout = () => {
+    apiService.logout();
     setUser(null);
-    localStorage.removeItem('courseforge_user');
   };
 
   const value = {
