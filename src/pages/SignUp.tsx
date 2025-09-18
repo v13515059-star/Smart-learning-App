@@ -12,14 +12,16 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setError('Passwords do not match');
       return;
     }
 
@@ -30,6 +32,7 @@ const SignUp = () => {
       navigate('/dashboard');
     } catch (error) {
       console.error('Signup failed:', error);
+      setError(error instanceof Error ? error.message : 'Signup failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -53,6 +56,13 @@ const SignUp = () => {
             <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
             <p className="text-gray-300">Start your learning journey today</p>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
+              <p className="text-red-400 text-sm">{error}</p>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">

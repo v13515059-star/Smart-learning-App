@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(data.user);
     } catch (error) {
       console.error('Login failed:', error);
-      throw error;
+      throw new Error(error instanceof Error ? error.message : 'Login failed');
     }
   };
 
@@ -69,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(data.user);
     } catch (error) {
       console.error('Signup failed:', error);
-      throw error;
+      throw new Error(error instanceof Error ? error.message : 'Signup failed');
     }
   };
 

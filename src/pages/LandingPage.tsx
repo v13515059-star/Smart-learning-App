@@ -69,7 +69,7 @@ const LandingPage = () => {
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <a 
-                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
+                href="https://www.youtube.com/watch?v=ScMzIvxBSi4" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-white border border-gray-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all inline-block"

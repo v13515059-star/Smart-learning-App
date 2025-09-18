@@ -33,15 +33,14 @@ app.get('/api/health', (req, res) => {
 });
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mindsphere-ai', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mindsphere-ai')
 .then(() => {
   console.log('Connected to MongoDB');
 })
 .catch((error) => {
   console.error('MongoDB connection error:', error);
+  console.log('Make sure MongoDB is running on your system');
+  console.log('You can start MongoDB with: mongod');
 });
 
 // Error handling middleware

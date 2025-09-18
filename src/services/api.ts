@@ -11,7 +11,9 @@ class ApiService {
 
   private async handleResponse(response: Response) {
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Network error' }));
+      const error = await response.json().catch(() => ({ 
+        error: response.status === 0 ? 'Cannot connect to server. Please make sure the backend is running.' : 'Network error' 
+      }));
       throw new Error(error.error || 'Request failed');
     }
     return response.json();
@@ -19,31 +21,41 @@ class ApiService {
 
   // Auth endpoints
   async login(email: string, password: string) {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    
-    const data = await this.handleResponse(response);
-    if (data.token) {
-      localStorage.setItem('auth_token', data.token);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await this.handleResponse(response);
+      if (data.token) {
+        localStorage.setItem('auth_token', data.token);
+      }
+      return data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
     }
-    return data;
   }
 
   async register(name: string, email: string, password: string) {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
-    });
-    
-    const data = await this.handleResponse(response);
-    if (data.token) {
-      localStorage.setItem('auth_token', data.token);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      
+      const data = await this.handleResponse(response);
+      if (data.token) {
+        localStorage.setItem('auth_token', data.token);
+      }
+      return data;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
     }
-    return data;
   }
 
   async getCurrentUser() {
