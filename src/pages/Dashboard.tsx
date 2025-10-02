@@ -41,8 +41,12 @@ const Dashboard = () => {
           apiService.getCourses(),
           apiService.getUserStats()
         ]);
-        setCourses(coursesData.courses);
-        setStats(statsData.stats);
+        setCourses(coursesData || []);
+        setStats(statsData || {
+          totalCourses: 0,
+          totalHours: 0,
+          averageProgress: 0
+        });
       } catch (error) {
         console.error('Failed to fetch data:', error);
       } finally {
@@ -59,7 +63,7 @@ const Dashboard = () => {
   };
 
   // Filter courses based on search query
-  const filteredCourses = courses.filter(course =>
+  const filteredCourses = (courses || []).filter(course =>
     course.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
