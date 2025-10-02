@@ -4,21 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 import ChatBot from '../components/ChatBot';
-import { 
-  Zap, 
-  Plus, 
-  BookOpen, 
-  Video, 
-  FileText, 
-  Clock, 
-  TrendingUp,
-  LogOut,
-  User,
-  Search,
-  Filter,
-  Grid,
-  List
-} from 'lucide-react';
+import { Zap, Plus, BookOpen, Video, FileText, Clock, TrendingUp, LogOut, User, Search, Filter, Grid2x2 as Grid, List } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
