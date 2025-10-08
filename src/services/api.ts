@@ -213,9 +213,80 @@ class ApiService {
       lessons: 8,
       progress: 0,
       type: 'youtube',
-      notes: [],
-      quizzes: [],
-      flashcards: [],
+      notes: [
+        {
+          title: 'Introduction to the Topic',
+          content: 'This comprehensive course covers all the essential concepts you need to master this subject.\n\nKey Learning Objectives:\n• Understanding core principles\n• Practical application of concepts\n• Best practices and common pitfalls\n• Real-world examples and case studies\n\nThis lesson provides a solid foundation for the topics covered in this course.',
+          duration: '10 min'
+        },
+        {
+          title: 'Core Concepts',
+          content: 'In this section, we dive deep into the fundamental concepts that form the basis of this subject.\n\nTopics Covered:\n1. Foundational principles\n2. Key terminology and definitions\n3. Important frameworks and methodologies\n4. Practical examples\n\nBy the end of this lesson, you will have a solid understanding of the core concepts.',
+          duration: '15 min'
+        },
+        {
+          title: 'Advanced Topics',
+          content: 'Now that you have mastered the basics, let\'s explore more advanced topics and techniques.\n\nAdvanced Concepts:\n• Complex problem-solving strategies\n• Optimization techniques\n• Integration with other systems\n• Performance considerations\n\nThis lesson will help you take your skills to the next level.',
+          duration: '20 min'
+        }
+      ],
+      quizzes: [
+        {
+          title: 'Knowledge Assessment',
+          questions: [
+            {
+              question: 'What is the primary focus of this course?',
+              options: [
+                'Learning the fundamentals',
+                'Advanced techniques only',
+                'Theory without practice',
+                'Unrelated topics'
+              ],
+              correctAnswer: 0,
+              explanation: 'This course focuses on learning the fundamentals first before moving to advanced topics.'
+            },
+            {
+              question: 'Which of the following is a key learning objective?',
+              options: [
+                'Memorizing facts',
+                'Understanding core principles',
+                'Avoiding practice',
+                'Ignoring best practices'
+              ],
+              correctAnswer: 1,
+              explanation: 'Understanding core principles is essential for mastering any subject.'
+            },
+            {
+              question: 'What should you do after completing each lesson?',
+              options: [
+                'Skip to the end',
+                'Practice and review',
+                'Forget everything',
+                'Start a new course'
+              ],
+              correctAnswer: 1,
+              explanation: 'Practice and review help reinforce learning and improve retention.'
+            }
+          ]
+        }
+      ],
+      flashcards: [
+        {
+          question: 'What are the core principles covered in this course?',
+          answer: 'Foundational concepts, practical application, best practices, and real-world examples.',
+          category: 'Fundamentals'
+        },
+        {
+          question: 'Why is understanding terminology important?',
+          answer: 'It helps communicate effectively and understand advanced concepts more easily.',
+          category: 'Concepts'
+        },
+        {
+          question: 'What is the benefit of learning best practices?',
+          answer: 'It helps avoid common mistakes and implement solutions more efficiently.',
+          category: 'Best Practices'
+        }
+      ],
       category: 'general',
       difficulty: 'beginner',
       tags: [],
@@ -248,9 +319,80 @@ class ApiService {
       lessons: 12,
       progress: 0,
       type: 'pdf',
-      notes: [],
-      quizzes: [],
-      flashcards: [],
+      notes: [
+        {
+          title: 'Chapter 1: Introduction',
+          content: 'Welcome to this comprehensive course based on your uploaded PDF document.\n\nThis chapter introduces the main topics and provides an overview of what you will learn throughout this course.\n\nKey Points:\n• Overview of the subject matter\n• Learning objectives\n• Course structure and timeline\n• Prerequisites and requirements\n\nTake your time to read through this material and make notes as needed.',
+          duration: '15 min'
+        },
+        {
+          title: 'Chapter 2: Main Content',
+          content: 'This section contains the core content extracted from your PDF document.\n\nWe will cover:\n1. Primary concepts and theories\n2. Detailed explanations with examples\n3. Practical applications\n4. Case studies and real-world scenarios\n\nMake sure to understand each concept before moving forward.',
+          duration: '25 min'
+        },
+        {
+          title: 'Chapter 3: Summary and Conclusion',
+          content: 'Let\'s review what we have learned throughout this course.\n\nKey Takeaways:\n• Summary of main concepts\n• Important formulas or frameworks\n• Next steps and further learning\n• Additional resources\n\nCongratulations on completing this course!',
+          duration: '20 min'
+        }
+      ],
+      quizzes: [
+        {
+          title: 'Final Assessment',
+          questions: [
+            {
+              question: 'What is the main topic covered in this document?',
+              options: [
+                'Introduction to key concepts',
+                'Unrelated content',
+                'Only theoretical information',
+                'No specific focus'
+              ],
+              correctAnswer: 0,
+              explanation: 'The document focuses on introducing and explaining key concepts in detail.'
+            },
+            {
+              question: 'Why are practical applications important?',
+              options: [
+                'They are not important',
+                'They help understand theory better',
+                'They make learning harder',
+                'They are optional'
+              ],
+              correctAnswer: 1,
+              explanation: 'Practical applications help bridge the gap between theory and real-world use.'
+            },
+            {
+              question: 'What should you do after completing this course?',
+              options: [
+                'Nothing',
+                'Review key concepts and practice',
+                'Delete all materials',
+                'Forget what you learned'
+              ],
+              correctAnswer: 1,
+              explanation: 'Reviewing and practicing helps solidify your understanding and retention.'
+            }
+          ]
+        }
+      ],
+      flashcards: [
+        {
+          question: 'What is the purpose of this course?',
+          answer: 'To provide a comprehensive understanding of the topics covered in the PDF document.',
+          category: 'Overview'
+        },
+        {
+          question: 'How can you apply what you learned?',
+          answer: 'By practicing with real-world examples and case studies presented in the course.',
+          category: 'Application'
+        },
+        {
+          question: 'What is the next step after completion?',
+          answer: 'Review the material, practice the concepts, and explore additional resources for deeper learning.',
+          category: 'Next Steps'
+        }
+      ],
       category: 'general',
       difficulty: 'beginner',
       tags: [],
